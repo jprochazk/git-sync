@@ -1,0 +1,14 @@
+{
+  "name": "git-sync",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./index.js",
+  "bin": "./index.js",
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "yargs-parser": "^20.2.9"
+  },
+  "scripts": {
+    "up": "npm un -g git-sync && npm i -g ."
+  }
+}
