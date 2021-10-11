@@ -1,6 +1,10 @@
 // @ts-check
 import $ from "../exec.js";
 
+async function rebase() {
+
+}
+
 export default async function(/** @type {string[]} */ pos, /** @type {Record<string, any>} */ flags) {
   const base = await $.branch.default;
   const active = await $.branch.active;
@@ -13,7 +17,6 @@ export default async function(/** @type {string[]} */ pos, /** @type {Record<str
   const hasChanges = !(await $`git stash`.silent).includes("No local changes");
 
   await $`git fetch`;
-  await $`git pull --rebase ${remote} ${base}`;
-
-  console.log(`rebase ${remote}:${branch} -> ${remote}:${await $.branch.active}`);
+  const info = await $`git pull --rebase ${remote} ${base}`;
+  //console.log(info);
 }
