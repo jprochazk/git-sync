@@ -9,6 +9,7 @@ export default async function(/** @type {string[]} */ pos, /** @type {Record<str
   const base = await $.branch.default;
   const active = await $.branch.active;
   const remote = await $`git remote`.silent;
+  console.log(pos, flags, base, active, remote);
 
   const [branch = base] = pos;
 
