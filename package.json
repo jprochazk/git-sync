@@ -1,5 +1,5 @@
 {
-  "name": "git-sync",
+  "name": "gitp",
   "version": "0.1.0",
   "type": "module",
   "main": "./index.js",
@@ -9,6 +9,11 @@
     "yargs-parser": "^20.2.9"
   },
   "scripts": {
-    "up": "npm un -g git-sync && npm i -g ."
+    "up": "npm un -g gitp && npm i -g ."
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^16.10.3",
+    "@types/yargs-parser": "^20.2.1"
   }
 }

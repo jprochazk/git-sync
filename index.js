@@ -1,22 +1,47 @@
 #!/usr/bin/env node
+// @ts-check
 
 import $ from "./exec.js";
 
-$.continueOnError = false;
+const help =
+`
+Usage: gitp <cmd> [args]
 
-let [branch] = $.argv._;
+Shortcuts for common git operations
 
-if (await $.exists(".git")) {
-  const hasChanges = !(await $.silent`git stash`).includes("No local changes");
-  const initialBranch = await $.silent`git rev-parse --abbrev-ref HEAD`;
-  branch ??= "master";
-  if (!branch) branch = "master";
-  if (branch === "this") branch = initialBranch;
-  await $`git fetch`;
-  await $`git checkout ${branch}`;
-  await $`git pull --rebase origin ${branch}`;
-  if (branch !== initialBranch) await $`git checkout ${initialBranch}`;
-  if (hasChanges) await $`git stash pop`;
-} else {
-  console.log("Not a git repository");
+gitp sync <branch> [--help|-h]
+  Synchronizes a branch with its remote counterpart in a convenient way.
+
+  <branch>      - Branch name; master, main, my-feature-branch, etc.
+                  Use keyword \`this\` to sync the branch that is currently active
+  [--help|-h]   - Display this message.
+
+gitp rebase <branch> [--help|-h]
+  Equivalent to \`git pull --rebase <remote> <branch>\`, but without
+  having to specify <remote> or ensuring that <branch> is up to date.
+
+  <branch>      - Branch name; master, main, my-feature-branch, etc.
+                  Omit to automatically use HEAD branch
+  [--help|-h]   - Display this message.
+  
+gitp help
+  Display this message
+`;
+
+const { $0, _: [cmd, ...pos], ...flags } = $.argv;
+
+if (!cmd || cmd === "help" || flags.help || flags.h) {
+  console.log(help);
+  process.exit(0);
+}
+
+if (!(await $.exists(".git"))) $.fail("`gitp` may only run in a git repository root");
+
+import sync from "./cmd/sync.js";
+import rebase from "./cmd/rebase.js";
+
+switch (cmd) {
+  case "sync": await sync(pos, flags); break;
+  case "rebase": await rebase(pos, flags); break;
+  default: $.fail(`Invalid command: \`${cmd}\`. See \`gitp help\` for a list of available commands`);
 }

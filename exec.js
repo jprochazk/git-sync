@@ -1,6 +1,7 @@
+// @ts-check
 import { exec } from "child_process";
 import fs from "fs-extra";
-import parser from "yargs-parser";
+import yargs from "yargs-parser";
 
 process.on("uncaughtException", () => {});
 
@@ -14,31 +15,60 @@ const join = (/** @type {TemplateStringsArray } */ strings, /** @type {any[]} */
   return out;
 }
 
-/** @returns {Promise<string | null>} */
-function capture(/** @type {string} */ cmd, silent = false) {
-  return new Promise((resolve, reject) => {
+/** @returns {Promise<string>} */
+function capture(/** @type {string} */ cmd, /** @type {{silent: boolean}} */ ctx) {
+  return new Promise((resolve, reject) => setTimeout(() => {
     let data = "";
     const child = exec(cmd, (error) => {
-      if (error) {
-        if (!$.continueOnError) reject();
-        else resolve(null);
-      }
+      if (error) $.fail(error.message);
       else resolve(data.trim());
     });
-    child.stdout.on("data", chunk => data += chunk);
-    child.stderr.on("data", chunk => data += chunk);
-    !silent && child.stdout.pipe(process.stdout);
-    !silent && child.stderr.pipe(process.stderr);
-  })
+
+    child.stdout?.on("data", chunk => data += chunk);
+    child.stderr?.on("data", chunk => data += chunk);
+
+    !ctx.silent && child.stdout?.pipe(process.stdout);
+    !ctx.silent && child.stderr?.pipe(process.stderr);
+    !ctx.silent && console.log(`$ ${cmd}`);
+  }, 0))
 }
-export default function $(/** @type {TemplateStringsArray } */ strings, /** @type {any[]} */ ...values) {
+
+/** @returns {Promise<string> & { silent: Promise<string> }} */
+function $(/** @type {TemplateStringsArray} */ strings, /** @type {any[]} */ ...values) {
   const cmd = join(strings, values);
-  console.log(`$ ${cmd}`);
-  return capture(cmd);
+  const ctx = { silent: false };
+  
+  /** @type {any} */
+  const out = capture(cmd, ctx);
+  Object.defineProperty(out, "silent", {
+    get() {
+      ctx.silent = true;
+      return out;
+    }
+  });
+  return out;
 }
-$.silent = function(/** @type {TemplateStringsArray } */ strings, /** @type {any[]} */ ...values) {
-  return capture(join(strings, values), true);
-}
-$.continueOnError = true;
+
 $.exists = async (/** @type {string} */ path) => fs.pathExists(path);
-$.argv = parser(process.argv.slice(2));
+
+$.argv = yargs(process.argv.slice(2));
+
+$.branch = {
+  get default() {
+    return new Promise(async resolve => {
+      const remote = await $`git remote show`.silent;
+      const output = await $`git remote show ${remote}`.silent;
+      resolve (output.match(/HEAD branch: (.*)/)?.[1] ?? "master");
+    });
+  },
+  get active() {
+    return $`git rev-parse --abbrev-ref HEAD`.silent
+  }
+}
+
+$.fail = (/** @type {string} */ message) => {
+  console.error(message);
+  process.exit(1);
+}
+
+export default $;
