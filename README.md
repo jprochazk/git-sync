@@ -4,8 +4,16 @@ Node.js CLI for automating common git operations
 
 ### Installation
 
-1. Clone the repository
-2. `$ yarn up`
+```
+$ yarn global add https://github.com/jprochazk/gitp.git
+```
+
+You _must_ use Yarn to install this package. Ensure the path
+returned by `yarn global bin` is in your PATH.
+
+NPM _is not able to install this package from GIT_, because it
+doesn't correctly install dev dependencies, which means the
+package can't be built.
 
 ### Usage
 
@@ -28,7 +36,7 @@ gitp rebase <branch> [--stash|-s] [--help|-h]
 
   <branch>      - Branch name; master, main, my-feature-branch, etc.
                   Omit to automatically use HEAD branch
-  [--stash|-s]  - Stash changes before rebasing.
+  [--stash|-s]  - Stash changes before rebasing
   [--help|-h]   - Display this message.
 
 gitp check
