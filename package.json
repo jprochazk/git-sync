@@ -18,7 +18,7 @@
     "rimraf": "^3.0.2"
   },
   "scripts": {
-    "build": "npx rimraf build && tsc",
+    "build": "tsc",
     "prepare": "npm run build",
     "local:install": "npm un -g gitp && npm run build && npm i -g ."
   }
