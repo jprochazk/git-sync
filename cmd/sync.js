@@ -1,5 +1,5 @@
 // @ts-check
-import $ from "../exec.js";
+import $ from "../util.js";
 
 export default async function(/** @type {string[]} */ pos, /** @type {Record<string, any>} */ flags) {
   const base = await $.branch.default;
