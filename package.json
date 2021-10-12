@@ -14,7 +14,7 @@
     "yargs-parser": "^20.2.9"
   },
   "scripts": {
-    "build": "rimraf build && tsc",
+    "build": "npx rimraf build && tsc",
     "prepare": "npm run build",
     "local:install": "npm un -g gitp && npm run build && npm i -g ."
   },
