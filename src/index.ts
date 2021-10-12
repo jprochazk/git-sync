@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-// @ts-check
 
 import $ from "./util.js";
 
-const help =
-`
+const help = `
 Usage: gitp <cmd> [args]
 
 Shortcuts for common git operations
@@ -34,7 +32,11 @@ gitp check
   Checks if \`gitp\` can be used in the current directory
 `;
 
-const { $0, _: [cmd, ...pos], ...flags } = $.argv;
+const {
+  $0,
+  _: [cmd, ...pos],
+  ...flags
+} = $.argv;
 
 if (flags.version || flags.v) {
   console.log($.pkg.version);
@@ -46,17 +48,26 @@ if (!cmd || flags.help || flags.h) {
   process.exit(0);
 }
 
-if (!(await $.exists(".git"))) $.fail("`gitp` may only run in a git repository root");
+if (!(await $.exists(".git")))
+  $.fail("`gitp` may only run in a git repository root");
 if (!(await $.remote)) $.fail("Repository has no remote");
 
 import sync from "./cmd/sync.js";
 import rebase from "./cmd/rebase.js";
 
 switch (cmd) {
-  case "check": break;
-  case "sync": await sync(pos, flags); break;
-  case "rebase": await rebase(pos, flags); break;
-  default: $.fail(`Invalid command: \`${cmd}\`. See \`gitp help\` for a list of available commands`);
+  case "check":
+    break;
+  case "sync":
+    await sync(pos, flags);
+    break;
+  case "rebase":
+    await rebase(pos, flags);
+    break;
+  default:
+    $.fail(
+      `Invalid command: \`${cmd}\`. See \`gitp help\` for a list of available commands`
+    );
 }
 
 // HACK: Something is keeping the process alive at this point, so forcibly exit

@@ -1,11 +1,10 @@
-// @ts-check
 import $ from "../util.js";
 
-export default async function(/** @type {string[]} */ pos, /** @type {Record<string, any>} */ flags) {
+export default async function (pos: string[], flags: Record<string, any>) {
   const base = await $.branch.default;
   const active = await $.branch.active;
   const remote = await $`git remote`.silent;
-  
+
   let [branch = base] = pos;
   if (branch === "this") branch = active;
 

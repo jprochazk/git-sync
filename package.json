@@ -2,18 +2,25 @@
   "name": "gitp",
   "version": "0.1.0",
   "type": "module",
-  "main": "./index.js",
-  "bin": "./index.js",
+  "main": "./build/index.js",
+  "bin": "./build/index.js",
+  "files": [
+    "/build",
+    "LICENSE",
+    "README.md"
+  ],
   "dependencies": {
     "fs-extra": "^10.0.0",
     "yargs-parser": "^20.2.9"
   },
   "scripts": {
-    "up": "npm un -g gitp && npm i -g ."
+    "build": "rimraf build && tsc",
+    "local:install": "npm un -g gitp && npm run build && npm i -g ."
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
     "@types/node": "^16.10.3",
-    "@types/yargs-parser": "^20.2.1"
+    "@types/yargs-parser": "^20.2.1",
+    "rimraf": "^3.0.2"
   }
 }
