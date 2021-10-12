@@ -17,16 +17,14 @@ gitp [--version|-v]
   Displays the CLI version
 
 gitp sync <branch> [--help|-h]
-  Synchronizes a branch with its remote counterpart in a convenient way.
+  Convenient synchronization with remote branches
 
   <branch>      - Branch name; master, main, my-feature-branch, etc.
                   Use keyword \`this\` to sync the branch that is currently active
   [--help|-h]   - Display this message.
 
 gitp rebase <branch> [--stash|-s] [--help|-h]
-  Equivalent to \`git rebase <branch>\`, but without having to ensure
-  that <branch> is up to date. This command requires that there are
-  no unsaved changes.
+  Smart interactive rebase
 
   <branch>      - Branch name; master, main, my-feature-branch, etc.
                   Omit to automatically use HEAD branch
